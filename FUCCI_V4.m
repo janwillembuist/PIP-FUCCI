@@ -22,7 +22,7 @@ function varargout = FUCCI_V4(varargin)
 
 % Edit the above text to modify the response to help FUCCI_V4
 
-% Last Modified by GUIDE v2.5 26-Aug-2020 12:48:37
+% Last Modified by GUIDE v2.5 21-Oct-2020 13:50:46
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;

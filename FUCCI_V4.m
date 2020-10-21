@@ -363,20 +363,20 @@ params.time_min_mitosis      = str2num(get(handles.edit4,'string'));
 params.min_signal_drop       = str2num(get(handles.edit5,'string'));
 
 function is_mitosis =check_for_mitosis(NUM,ii,handles)
-        aa=find(NUM(:,2)==ii);
-    if ~isempty(aa)
-        a0=length(NUM(aa,8));
-        b0=length(unique(NUM(aa,8)));
-        if a0==b0
-            is_mitosis=0;
-            set(handles.listbox1,'string','1');
-            set(handles.listbox1,'value',1)
-        else
-            is_mitosis=1;
-            set(handles.listbox1,'string',{'1';'2'});
-            set(handles.listbox1,'value',1);
-        end
+aa=find(NUM(:,2)==ii);
+if ~isempty(aa)
+    a0=length(NUM(aa,8));
+    b0=length(unique(NUM(aa,8)));
+    if a0==b0
+        is_mitosis=0;
+        set(handles.listbox1,'string','1');
+        set(handles.listbox1,'value',1)
+    else
+        is_mitosis=1;
+        set(handles.listbox1,'string',{'1';'2'});
+        set(handles.listbox1,'value',1);
     end
+end
 
 function annotated_data = annotate_data(NUM,handles)
     params=get_params(handles);

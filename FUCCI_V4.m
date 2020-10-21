@@ -24,7 +24,7 @@ function varargout = FUCCI_V4(varargin)
 
 % Edit the above text to modify the response to help FUCCI_V4
 
-% Last Modified by GUIDE v2.5 21-Oct-2020 13:50:46
+% Last Modified by GUIDE v2.5 21-Oct-2020 15:24:37
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -707,12 +707,20 @@ end
 
 function update_plots(handles)
 % The plot is updated through this function
+
+% Plot the lines
+plot(handles.green_channel2,'g', 'LineWidth', 1.5)
 hold on
-plot(handles.green_channel2,'g')
-plot(handles.red_channel2,'r')
-plot(handles.white_channel2,'c')
-plot(handles.classified/3,'k')
+plot(handles.red_channel2,'r', 'LineWidth', 1.5)
+plot(handles.white_channel2,'c', 'LineWidth', 1.5)
+plot(handles.classified/3,'k', 'LineWidth', 1.5)
 hold off
+
+% Legend and labels
 legend('PIP-mVenus','Gem-mCherry','SiR-DNA','Classification', 'Location', 'best')
 xlabel('Frame')
 ylabel('Relative intensity')
+
+% Grid settings
+grid on
+grid minor

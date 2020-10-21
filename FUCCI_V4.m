@@ -1,28 +1,30 @@
 function varargout = FUCCI_V4(varargin)
 % FUCCI_V4 MATLAB code for FUCCI_V4.fig
-%      FUCCI_V4, by itself, creates a new FUCCI_V4 or raises the existing
-%      singleton
+%   FUCCI_V4, by itself, creates a new FUCCI_V4 or raises the existing
+%   singleton
 %
-%      H = FUCCI_V4 returns the handle to a new FUCCI_V4 or the handle to
-%      the existing singleton*.
+%   H = FUCCI_V4 returns the handle to a new FUCCI_V4 or the handle to the
+%   existing singleton*.
 %
-%      FUCCI_V4('CALLBACK',hObject,eventData,handles,...) calls the local
-%      function named CALLBACK in FUCCI_V4.M with the given input arguments.
+%   FUCCI_V4('CALLBACK',hObject,eventData,handles,...) calls the local
+%   function named CALLBACK in FUCCI_V4.M with the given input arguments.
 %
-%      FUCCI_V4('Property','Value',...) creates a new FUCCI_V4 or raises the
-%      existing singleton*.  Starting from the left, property value pairs are
-%      applied to the GUI before FUCCI_V4_OpeningFcn gets called.  An
-%      unrecognized property name or invalid value makes property application
-%      stop.  All inputs are passed to FUCCI_V4_OpeningFcn via varargin.
+%   FUCCI_V4('Property','Value',...) creates a new FUCCI_V4 or raises the
+%   existing singleton*.  Starting from the left, property value pairs are
+%   applied to the GUI before FUCCI_V4_OpeningFcn gets called. An
+%   unrecognized property name or invalid value makes property application
+%   stop.  All inputs are passed to FUCCI_V4_OpeningFcn via varargin.
 %
-%      *See GUI Options on GUIDE's Tools menu.  Choose "GUI allows only one
-%      instance to run (singleton)".
+%   Run guide(FUCCI_V4.fig) to edit the GUI.
+%
+%   *See GUI Options on GUIDE's Tools menu.  Choose "GUI allows only one
+%   instance to run (singleton)".
 %
 % See also: GUIDE, GUIDATA, GUIHANDLES
 
 % Edit the above text to modify the response to help FUCCI_V4
 
-% Last Modified by GUIDE v2.5 26-Aug-2020 12:48:37
+% Last Modified by GUIDE v2.5 21-Oct-2020 15:24:37
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -46,11 +48,7 @@ end
 
 % --- Executes just before FUCCI_V4 is made visible.
 function FUCCI_V4_OpeningFcn(hObject, eventdata, handles, varargin)
-% This function has no output args, see OutputFcn.
-% hObject    handle to figure
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-% varargin   command line arguments to FUCCI_V4 (see VARARGIN)
+% This function sets the base values in all edit boxes of the FUCCI GUI.
 set(handles.edit1,'string','0.001')
 set(handles.edit2,'string','-0.05')
 set(handles.edit3,'string','20')
@@ -98,22 +96,24 @@ handles.current_track=current_track;
 params = get_params(handles);
 is_mitosis=check_for_mitosis_an(handles.annotated_data,current_track,handles);
 current_cell=1;
-[green_channel, red_channel, green_channel2,red_channel2] = get_channels_an(handles.annotated_data,current_track,current_cell);
+[green_channel, red_channel, white_channel, green_channel2,red_channel2, white_channel2] = get_channels_an(handles.annotated_data,current_track,current_cell);
 green_Slope2=calc_slope(green_channel2);
 red_Slope2=calc_slope(red_channel2);
+white_Slope2=calc_slope(white_channel2);
 a0=find(annotated_data(:,1)==current_track);
 b0=find(annotated_data(a0,2)==current_cell);
-classified=annotated_data(a0(b0),5);
-%handles.axes1
-plot(green_channel2,'g')
-hold on
-plot(red_channel2,'r')
-plot(classified/3,'k')
-hold off
-handles.green_channel2=green_channel2;
-handles.red_channel2=red_channel2;
+classified=annotated_data(a0(b0),6);
+
+% Save into handles
 handles.classified=classified;
-handles.annotated_data=annotated_data;
+handles.green_channel2 = green_channel2;
+handles.red_channel2   = red_channel2;
+handles.white_channel2 = white_channel2;
+handles.annotated_data = annotated_data;
+
+% Update plots
+update_plots(handles)
+
 guidata(hObject,handles);
 
 % --- Executes during object creation, after setting all properties.
@@ -144,7 +144,7 @@ function Save_data_Callback(hObject, eventdata, handles)
  [filename, pathname] = uiputfile('*.xlsx','save file as..');
  annotated_data=handles.annotated_data;
 
-    xlswrite([pathname filename], {'track #', 'cell #' , 'red channel' , 'green channel', 'cell cycle stage'}, 'sheet1' , 'A1')
+    xlswrite([pathname filename], {'track #', 'cell #' , 'red channel' , 'green channel','white channel', 'cell cycle stage'}, 'sheet1' , 'A1')
     xlswrite([pathname filename], annotated_data, 'sheet1', 'A2');
     handles.annotated_data=annotated_data;
 guidata(hObject,handles);
@@ -186,17 +186,26 @@ for ii=1:length(list_track)
         current_track=str2num(list_track(ii,:));
         is_mitosis=check_for_mitosis(handles.NUM,current_track,handles);
         for current_cell=0+1:is_mitosis+1
-            [green_channel, red_channel, green_channel2,red_channel2]=get_channels(handles.NUM,current_track,current_cell);
-            green_Slope2=calc_slope(green_channel2);
-            red_Slope2=calc_slope(red_channel2);
-            classified=classify_stages(params,red_Slope2,green_Slope2,red_channel,green_channel,red_channel2,green_channel2);
-            annotated_data = [annotated_data ; ones(size(classified))'*current_track, ones(size(classified))'*current_cell,green_channel(1:length(classified)),red_channel(1:length(classified)),classified'];
+            % Get channels
+            [green_channel, red_channel, white_channel, green_channel2,red_channel2, white_channel2]=get_channels(handles.NUM,current_track,current_cell);
+            
+            % Calculate slopes
+            green_Slope2 = calc_slope(green_channel2);
+            red_Slope2   = calc_slope(red_channel2);
+            white_Slope2 = calc_slope(white_channel2);
+            
+            % Classify and annotate
+            classified=classify_stages(params,red_Slope2,green_Slope2,white_Slope2,red_channel,green_channel,white_channel,red_channel2,green_channel2,white_channel2);
+            annotated_data = [annotated_data ; ones(size(classified))'*current_track,...
+                ones(size(classified))'*current_cell, green_channel(1:length(classified)), ...
+                red_channel(1:length(classified)), white_channel(1:length(classified)), classified'];
         end
     catch ME
        disp([ 'the track is' num2str(current_track)])
        pause
     end
 end
+% Save annotated data
 handles.annotated_data=annotated_data;
 guidata(hObject, handles);
 
@@ -207,24 +216,33 @@ function axes1_CreateFcn(hObject, eventdata, handles)
 % handles    empty - handles not created until after all CreateFcns called
 % Hint: place code in OpeningFcn to populate axes1
 
-function [green_channel, red_channel,green_channel2,red_channel2]=get_channels(NUM,ii,current_cell)
+function [green_channel, red_channel, white_channel, ...
+    green_channel2, red_channel2, white_channel2] = get_channels(NUM,ii,current_cell)
+% Function to get the channels from the NUM part of the excel file
 aa=find(NUM(:,2)==ii);
 if ~isempty(aa)
     green_channel=NUM(aa,11);
     red_channel=NUM(aa,12);
+    white_channel=NUM(aa,13);
+    
+    % Create normalized channels
     for kk=2:length(green_channel)-1
         if current_cell==1
             green_channel2(kk)=max(green_channel(kk-1:kk+1));
             red_channel2(kk)=max(red_channel(kk-1:kk+1));
+            white_channel2(kk)=max(white_channel(kk-1:kk+1));
         else
             green_channel2(kk)=min(green_channel(kk-1:kk+1));
             red_channel2(kk)=min(red_channel(kk-1:kk+1));
+            white_channel2(kk)=min(white_channel(kk-1:kk+1));
         end
     end
     green_channel2 = green_channel2/max(green_channel2);
     red_channel2   = red_channel2/max(red_channel2);
-    green_channel2 = medfilt1(green_channel2,5);
-    red_channel2   = medfilt1(red_channel2,5);
+    white_channel2 = white_channel2/max(white_channel2);
+    green_channel2 = medfilt1(green_channel2, 5);
+    red_channel2   = medfilt1(red_channel2, 5);
+    white_channel2 = medfilt1(white_channel2, 5);
 end
 
 function green_Slope=calc_slope(green_channel2)
@@ -234,8 +252,12 @@ function green_Slope=calc_slope(green_channel2)
       green_Slope(jj+1)=P(1);
   end
 
-function classified=classify_stages(params, red_Slope,green_Slope,red_channel,green_channel,red_channel2,green_channel2)
-% get paramaters
+function classified=classify_stages(params,...
+    red_Slope, green_Slope, white_Slope,...
+    red_channel, green_channel, white_channel,...
+    red_channel2, green_channel2, white_channel2)
+% Function to classify the stages in channels. White channels are not used
+% for classification yet.
 thresh_gradual=params.thresh_gradual;
 thresh_steep=params.thresh_steep;
 time_interval_mitosis=params.time_interval_mitosis;
@@ -363,20 +385,20 @@ params.time_min_mitosis      = str2num(get(handles.edit4,'string'));
 params.min_signal_drop       = str2num(get(handles.edit5,'string'));
 
 function is_mitosis =check_for_mitosis(NUM,ii,handles)
-        aa=find(NUM(:,2)==ii);
-    if ~isempty(aa)
-        a0=length(NUM(aa,8));
-        b0=length(unique(NUM(aa,8)));
-        if a0==b0
-            is_mitosis=0;
-            set(handles.listbox1,'string','1');
-            set(handles.listbox1,'value',1)
-        else
-            is_mitosis=1;
-            set(handles.listbox1,'string',{'1';'2'});
-            set(handles.listbox1,'value',1);
-        end
+aa=find(NUM(:,2)==ii);
+if ~isempty(aa)
+    a0=length(NUM(aa,8));
+    b0=length(unique(NUM(aa,8)));
+    if a0==b0
+        is_mitosis=0;
+        set(handles.listbox1,'string','1');
+        set(handles.listbox1,'value',1)
+    else
+        is_mitosis=1;
+        set(handles.listbox1,'string',{'1';'2'});
+        set(handles.listbox1,'value',1);
     end
+end
 
 function annotated_data = annotate_data(NUM,handles)
     params=get_params(handles);
@@ -487,26 +509,23 @@ function listbox1_Callback(hObject, eventdata, handles)
 %        contents{get(hObject,'Value')} returns selected item from listbox1
 annotated_data=handles.annotated_data;
 current_cell=get(hObject,'value');
-
 current_track=handles.current_track;
-params=get_params(handles);
 
-[green_channel, red_channel, green_channel2,red_channel2] = get_channels_an(handles.NUM,current_track,current_cell);
-green_Slope2=calc_slope(green_channel2);
-red_Slope2=calc_slope(red_channel2);
+[green_channel, red_channel, white_channel, green_channel2,red_channel2, white_channel2] = get_channels_an(handles.NUM,current_track,current_cell);
 a0=find(annotated_data(:,1)==current_track);
 b0=find(annotated_data(a0,2)==current_cell);
-classified=annotated_data(a0(b0),5);
-%handles.axes1
-plot(green_channel2,'g')
-hold on
-plot(red_channel2,'r')
-plot(classified/3,'k')
-hold off
+classified=annotated_data(a0(b0),6);
+
+% Save into handles
 handles.classified=classified;
-handles.green_channel2=green_channel2;
-handles.red_channel2=red_channel2;
-handles.annotated_data=annotated_data;
+handles.green_channel2 = green_channel2;
+handles.red_channel2   = red_channel2;
+handles.white_channel2 = white_channel2;
+handles.annotated_data = annotated_data;
+
+% Update plots
+update_plots(handles)
+
 guidata(hObject,handles);
 
 % --- Executes during object creation, after setting all properties.
@@ -535,21 +554,19 @@ for ii=1:length(list_track)
         current_track=str2num(list_track(ii,:));
         is_mitosis=check_for_mitosis(handles.NUM,current_track,handles);
         for current_cell=0+1:is_mitosis+1
-
-
-            [green_channel, red_channel, green_channel2,red_channel2]=get_channels(handles.NUM,current_track,current_cell);
+            [green_channel, red_channel, white_channel, green_channel2,red_channel2, white_channel2]=get_channels(handles.NUM,current_track,current_cell);
             green_Slope2=calc_slope(green_channel2);
             red_Slope2=calc_slope(red_channel2);
-            classified=classify_stages(params,red_Slope2,green_Slope2,red_channel,green_channel,red_channel2,green_channel2);
-            annotated_data=[annotated_data ; ones(size(classified))'*current_track, ones(size(classified))'*current_cell,green_channel(1:length(classified)),red_channel(1:length(classified)),classified'];
-
+            white_Slope2=calc_slope(white_channel2);
+            classified=classify_stages(params,red_Slope2,green_Slope2,white_Slope2,red_channel,green_channel,white_channel,red_channel2,green_channel2,white_channel2);
+            annotated_data=[annotated_data ; ones(size(classified))'*current_track, ones(size(classified))'*current_cell,green_channel(1:length(classified)),red_channel(1:length(classified)),white_channel(1:length(classified)),classified'];
         end
     catch ME
        disp([ 'the track is' num2str(current_track)])
        pause
     end
 end
-xlswrite([pathname filename], {'track #', 'cell #' , 'red channel' , 'green channel', 'cell cycle stage'}, 'sheet1' , 'A1')
+xlswrite([pathname filename], {'track #', 'cell #' , 'red channel' , 'green channel','white channel', 'cell cycle stage'}, 'sheet1' , 'A1')
 xlswrite([pathname filename], annotated_data, 'sheet1', 'A2');
 handles.annotated_data=annotated_data;
 guidata(hObject,handles);
@@ -625,16 +642,14 @@ function pushbutton4_Callback(hObject, eventdata, handles)
     end_value=str2num(get(handles.edit8,'string'));
     cycle_phase=get(handles.listbox2,'value');
     handles.classified(start_value:end_value)=cycle_phase;
-    %handles.axes1
-    plot(handles.green_channel2,'g')
-    hold on
-    plot(handles.red_channel2,'r')
-    plot(handles.classified/3,'k')
-    hold off
+    
+    % Update plots
+    update_plots(handles)
+    
     % update annotated_data
     a0=find(annotated_data(:,1)==current_track);
     b0=find(annotated_data(a0,2)==current_cell);
-    annotated_data(a0(b0),5)=handles.classified;
+    annotated_data(a0(b0),6)=handles.classified;
     handles.annotated_data=annotated_data;
     guidata(hObject,handles);
 
@@ -664,23 +679,48 @@ if length(b0) > 1
     set(handles.listbox1,'value',1);
 end
         
-function [green_channel, red_channel, green_channel2,red_channel2]=get_channels_an(annotated_data,current_track,current_cell)
+function [green_channel, red_channel, white_channel, green_channel2,red_channel2, white_channel2]=get_channels_an(annotated_data,current_track,current_cell)
 a0=find(annotated_data(:,1)==current_track);
 aa=find(annotated_data(a0,2)==current_cell);
 if ~isempty(aa)
     green_channel=annotated_data(aa,3);
     red_channel=annotated_data(aa,4);
+    white_channel=annotated_data(aa,5);
     for kk=2:length(green_channel)-1
         if current_cell==1
             green_channel2(kk)=max(green_channel(kk-1:kk+1));
             red_channel2(kk)=max(red_channel(kk-1:kk+1));
+            white_channel2(kk)=max(white_channel(kk-1:kk+1));
         else
             green_channel2(kk)=min(green_channel(kk-1:kk+1));
             red_channel2(kk)=min(red_channel(kk-1:kk+1));
+            white_channel2(kk)=min(white_channel(kk-1:kk+1));
         end
     end
     green_channel2=green_channel2/max(green_channel2);
     red_channel2=red_channel2/max(red_channel2);
+    white_channel2=white_channel2/max(white_channel2);
     green_channel2=medfilt1(green_channel2,5);
     red_channel2=medfilt1(red_channel2,5);
+    white_channel2=medfilt1(white_channel2,5);
 end
+
+function update_plots(handles)
+% The plot is updated through this function
+
+% Plot the lines
+plot(handles.green_channel2,'g', 'LineWidth', 1.5)
+hold on
+plot(handles.red_channel2,'r', 'LineWidth', 1.5)
+plot(handles.white_channel2,'c', 'LineWidth', 1.5)
+plot(handles.classified/3,'k', 'LineWidth', 1.5)
+hold off
+
+% Legend and labels
+legend('PIP-mVenus','Gem-mCherry','SiR-DNA','Classification', 'Location', 'best')
+xlabel('Frame')
+ylabel('Relative intensity')
+
+% Grid settings
+grid on
+grid minor

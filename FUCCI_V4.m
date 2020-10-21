@@ -103,18 +103,6 @@ white_Slope2=calc_slope(white_channel2);
 a0=find(annotated_data(:,1)==current_track);
 b0=find(annotated_data(a0,2)==current_cell);
 classified=annotated_data(a0(b0),6);
-%handles.axes1
-
-% Update plot
-plot(green_channel2,'g')
-hold on
-plot(red_channel2,'r')
-plot(white_channel2, 'c')
-plot(classified/3,'k')
-hold off
-legend('PIP-mVenus','Gem-mCherry','SiR-DNA','Classification', 'Location', 'NorthEastOutside')
-xlabel('Frame')
-ylabel('Relative intensity')
 
 % Save into handles
 handles.classified=classified;
@@ -122,6 +110,10 @@ handles.green_channel2 = green_channel2;
 handles.red_channel2   = red_channel2;
 handles.white_channel2 = white_channel2;
 handles.annotated_data = annotated_data;
+
+% Update plots
+update_plots(handles)
+
 guidata(hObject,handles);
 
 % --- Executes during object creation, after setting all properties.
@@ -152,7 +144,7 @@ function Save_data_Callback(hObject, eventdata, handles)
  [filename, pathname] = uiputfile('*.xlsx','save file as..');
  annotated_data=handles.annotated_data;
 
-    xlswrite([pathname filename], {'track #', 'cell #' , 'red channel' , 'green channel', 'cell cycle stage'}, 'sheet1' , 'A1')
+    xlswrite([pathname filename], {'track #', 'cell #' , 'red channel' , 'green channel','white channel', 'cell cycle stage'}, 'sheet1' , 'A1')
     xlswrite([pathname filename], annotated_data, 'sheet1', 'A2');
     handles.annotated_data=annotated_data;
 guidata(hObject,handles);
@@ -523,16 +515,6 @@ current_track=handles.current_track;
 a0=find(annotated_data(:,1)==current_track);
 b0=find(annotated_data(a0,2)==current_cell);
 classified=annotated_data(a0(b0),6);
-%handles.axes1
-plot(green_channel2,'g')
-hold on
-plot(red_channel2,'r')
-plot(white_channel2, 'c')
-plot(classified/3,'k')
-hold off
-legend('PIP-mVenus','Gem-mCherry','SiR-DNA','Classification', 'Location', 'NorthEastOutside')
-xlabel('Frame')
-ylabel('Relative intensity')
 
 % Save into handles
 handles.classified=classified;
@@ -540,6 +522,10 @@ handles.green_channel2 = green_channel2;
 handles.red_channel2   = red_channel2;
 handles.white_channel2 = white_channel2;
 handles.annotated_data = annotated_data;
+
+% Update plots
+update_plots(handles)
+
 guidata(hObject,handles);
 
 % --- Executes during object creation, after setting all properties.
@@ -656,16 +642,10 @@ function pushbutton4_Callback(hObject, eventdata, handles)
     end_value=str2num(get(handles.edit8,'string'));
     cycle_phase=get(handles.listbox2,'value');
     handles.classified(start_value:end_value)=cycle_phase;
-    %handles.axes1
-    plot(handles.green_channel2,'g')
-    hold on
-    plot(handles.red_channel2,'r')
-    plot(handles.white_channel2,'c')
-    plot(handles.classified/3,'k')
-    hold off
-    legend('PIP-mVenus','Gem-mCherry','SiR-DNA','Classification', 'Location', 'NorthEastOutside')
-    xlabel('Frame')
-    ylabel('Relative intensity')
+    
+    % Update plots
+    update_plots(handles)
+    
     % update annotated_data
     a0=find(annotated_data(:,1)==current_track);
     b0=find(annotated_data(a0,2)==current_cell);
@@ -725,14 +705,14 @@ if ~isempty(aa)
     white_channel2=medfilt1(white_channel2,5);
 end
 
-function update_plot(handles)
-% Update the plots
-plot(handles.green_channel2,'g')
+function update_plots(handles)
+% The plot is updated through this function
 hold on
+plot(handles.green_channel2,'g')
 plot(handles.red_channel2,'r')
 plot(handles.white_channel2,'c')
 plot(handles.classified/3,'k')
 hold off
-legend('PIP-mVenus','Gem-mCherry','SiR-DNA','Classification', 'Location', 'NorthEastOutside')
+legend('PIP-mVenus','Gem-mCherry','SiR-DNA','Classification', 'Location', 'best')
 xlabel('Frame')
 ylabel('Relative intensity')

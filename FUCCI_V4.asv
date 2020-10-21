@@ -104,7 +104,7 @@ red_Slope2=calc_slope(red_channel2);
 a0=find(annotated_data(:,1)==current_track);
 b0=find(annotated_data(a0,2)==current_cell);
 classified=annotated_data(a0(b0),5);
-%handles.axes1
+handles.axes1
 plot(green_channel2,'g')
 hold on
 plot(red_channel2,'r')
@@ -190,7 +190,7 @@ for ii=1:length(list_track)
             green_Slope2=calc_slope(green_channel2);
             red_Slope2=calc_slope(red_channel2);
             classified=classify_stages(params,red_Slope2,green_Slope2,red_channel,green_channel,red_channel2,green_channel2);
-            annotated_data = [annotated_data ; ones(size(classified))'*current_track, ones(size(classified))'*current_cell,green_channel(1:length(classified)),red_channel(1:length(classified)),classified'];
+            annotated_data = [annotated_data ; ones(size(classified))'*current_track, ones(size(classified))'*current_cell,green_channel(1:length(classified)),red_channel(1:length(classified)),classified']
         end
     catch ME
        disp([ 'the track is' num2str(current_track)])
@@ -209,7 +209,7 @@ function axes1_CreateFcn(hObject, eventdata, handles)
 
 function [green_channel, red_channel,green_channel2,red_channel2]=get_channels(NUM,ii,current_cell)
 aa=find(NUM(:,2)==ii);
-if ~isempty(aa)
+    if ~isempty(aa)
     green_channel=NUM(aa,11);
     red_channel=NUM(aa,12);
     for kk=2:length(green_channel)-1
@@ -225,8 +225,11 @@ if ~isempty(aa)
     red_channel2   = red_channel2/max(red_channel2);
     green_channel2 = medfilt1(green_channel2,5);
     red_channel2   = medfilt1(red_channel2,5);
-end
-
+    disp(length(green_channel2))
+    disp(length(green_channel))
+ 
+    end
+ 
 function green_Slope=calc_slope(green_channel2)
   for jj=1:length(green_channel2)-4
       green_vect=green_channel2(jj:jj+4);
@@ -405,9 +408,10 @@ function edit2_Callback(hObject, eventdata, handles)
 % hObject    handle to edit2 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+
 % Hints: get(hObject,'String') returns contents of edit2 as text
 %        str2double(get(hObject,'String')) returns contents of edit2 as a double
-val=get(hObject,value);
+    val=get(hObject,value);
     
 % --- Executes during object creation, after setting all properties.
 function edit2_CreateFcn(hObject, eventdata, handles)
@@ -497,7 +501,7 @@ red_Slope2=calc_slope(red_channel2);
 a0=find(annotated_data(:,1)==current_track);
 b0=find(annotated_data(a0,2)==current_cell);
 classified=annotated_data(a0(b0),5);
-%handles.axes1
+handles.axes1
 plot(green_channel2,'g')
 hold on
 plot(red_channel2,'r')
@@ -529,7 +533,7 @@ function annotater_Callback(hObject, eventdata, handles)
 [filename, pathname] = uiputfile('*.xlsx','save file as..');
 annotated_data=[];
 params=get_params(handles);
-list_track=get(handles.popupmenu1,'string');
+list_track=get(handles.popupmenu1,'string')
 for ii=1:length(list_track)
     try
         current_track=str2num(list_track(ii,:));
@@ -541,7 +545,7 @@ for ii=1:length(list_track)
             green_Slope2=calc_slope(green_channel2);
             red_Slope2=calc_slope(red_channel2);
             classified=classify_stages(params,red_Slope2,green_Slope2,red_channel,green_channel,red_channel2,green_channel2);
-            annotated_data=[annotated_data ; ones(size(classified))'*current_track, ones(size(classified))'*current_cell,green_channel(1:length(classified)),red_channel(1:length(classified)),classified'];
+            annotated_data=[annotated_data ; ones(size(classified))'*current_track, ones(size(classified))'*current_cell,green_channel(1:length(classified)),red_channel(1:length(classified)),classified']
 
         end
     catch ME
@@ -625,7 +629,7 @@ function pushbutton4_Callback(hObject, eventdata, handles)
     end_value=str2num(get(handles.edit8,'string'));
     cycle_phase=get(handles.listbox2,'value');
     handles.classified(start_value:end_value)=cycle_phase;
-    %handles.axes1
+    handles.axes1
     plot(handles.green_channel2,'g')
     hold on
     plot(handles.red_channel2,'r')
@@ -651,6 +655,7 @@ handles.RAW=RAW;
 handles.annotated_data=NUM;
 set(handles.popupmenu1,'string',num2str(unique(NUM(:,1))));
 guidata(hObject,handles);
+
 
 function is_mitosis=check_for_mitosis_an(annotated_data,current_track,handles)
 is_mitosis=0;

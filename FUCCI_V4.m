@@ -15,7 +15,7 @@ function varargout = FUCCI_V4(varargin)
 %   unrecognized property name or invalid value makes property application
 %   stop.  All inputs are passed to FUCCI_V4_OpeningFcn via varargin.
 %
-%   Run guide(FUCCI_V4.fig) to edit the GUI.
+%   Run guide('FUCCI_V4.fig') to edit the GUI. (JWB)
 %
 %   *See GUI Options on GUIDE's Tools menu.  Choose "GUI allows only one
 %   instance to run (singleton)".
@@ -24,7 +24,7 @@ function varargout = FUCCI_V4(varargin)
 
 % Edit the above text to modify the response to help FUCCI_V4
 
-% Last Modified by GUIDE v2.5 21-Oct-2020 15:24:37
+% Last Modified by GUIDE v2.5 26-Oct-2020 12:28:07
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -138,15 +138,12 @@ function pushbutton1_Callback(hObject, eventdata, handles)
 
 % --- Executes on button press in Save_data.
 function Save_data_Callback(hObject, eventdata, handles)
-% hObject    handle to Save_data (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
- [filename, pathname] = uiputfile('*.xlsx','save file as..');
- annotated_data=handles.annotated_data;
-
-    xlswrite([pathname filename], {'track #', 'cell #' , 'red channel' , 'green channel','white channel', 'cell cycle stage'}, 'sheet1' , 'A1')
-    xlswrite([pathname filename], annotated_data, 'sheet1', 'A2');
-    handles.annotated_data=annotated_data;
+% Function that saves the output in a .xlsx file (JWB)
+[filename, pathname] = uiputfile('*.xlsx','save file as..');
+annotated_data=handles.annotated_data;
+xlswrite([pathname filename], {'track #', 'cell #' , 'red channel' , 'green channel','white channel', 'cell cycle stage'}, 'sheet1' , 'A1')
+xlswrite([pathname filename], annotated_data, 'sheet1', 'A2');
+handles.annotated_data=annotated_data;
 guidata(hObject,handles);
 
 
@@ -166,9 +163,7 @@ function open_file_Callback(hObject, eventdata, handles)
 
 % --------------------------------------------------------------------
 function open_Callback(hObject, eventdata, handles)
-% hObject    handle to open (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
+% Function for the excel opening of raw data. (JWB)
 [filename,pathname]=uigetfile('*.xlsx');
 [NUM,TXT,RAW]=xlsread([pathname, filename]);
 handles.NUM=NUM;
@@ -194,8 +189,13 @@ for ii=1:length(list_track)
             red_Slope2   = calc_slope(red_channel2);
             white_Slope2 = calc_slope(white_channel2);
             
-            % Classify and annotate
-            classified=classify_stages(params,red_Slope2,green_Slope2,white_Slope2,red_channel,green_channel,white_channel,red_channel2,green_channel2,white_channel2);
+            % Classify stages
+            classified = classify_stages(params,red_Slope2,green_Slope2,white_Slope2,red_channel,green_channel,white_channel,red_channel2,green_channel2,white_channel2);
+            
+            % Set begin and end to zero
+            classified = delete_begin_end(classified);
+            
+            % Annotate
             annotated_data = [annotated_data ; ones(size(classified))'*current_track,...
                 ones(size(classified))'*current_cell, green_channel(1:length(classified)), ...
                 red_channel(1:length(classified)), white_channel(1:length(classified)), classified'];
@@ -215,6 +215,275 @@ function axes1_CreateFcn(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 % Hint: place code in OpeningFcn to populate axes1
+
+function edit1_Callback(hObject, eventdata, handles)
+% hObject    handle to edit1 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+% Hints: get(hObject,'String') returns contents of edit1 as text
+%        str2double(get(hObject,'String')) returns contents of edit1 as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function edit1_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to edit1 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+function edit2_Callback(hObject, eventdata, handles)
+% hObject    handle to edit2 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+% Hints: get(hObject,'String') returns contents of edit2 as text
+%        str2double(get(hObject,'String')) returns contents of edit2 as a double
+val=get(hObject,value);
+    
+% --- Executes during object creation, after setting all properties.
+function edit2_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to edit2 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+function edit3_Callback(hObject, eventdata, handles)
+% hObject    handle to edit3 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+% Hints: get(hObject,'String') returns contents of edit3 as text
+%        str2double(get(hObject,'String')) returns contents of edit3 as a double
+
+% --- Executes during object creation, after setting all properties.
+function edit3_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to edit3 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+function edit4_Callback(hObject, eventdata, handles)
+% hObject    handle to edit4 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+% Hints: get(hObject,'String') returns contents of edit4 as text
+%        str2double(get(hObject,'String')) returns contents of edit4 as a double
+
+% --- Executes during object creation, after setting all properties.
+function edit4_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to edit4 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+function edit5_Callback(hObject, eventdata, handles)
+% hObject    handle to edit5 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+% Hints: get(hObject,'String') returns contents of edit5 as text
+%        str2double(get(hObject,'String')) returns contents of edit5 as a double
+
+% --- Executes during object creation, after setting all properties.
+function edit5_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to edit5 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+% --- Executes on selection change in listbox1.
+function listbox1_Callback(hObject, eventdata, handles)
+% hObject    handle to listbox1 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+% Hints: contents = cellstr(get(hObject,'String')) returns listbox1 contents as cell array
+%        contents{get(hObject,'Value')} returns selected item from listbox1
+annotated_data=handles.annotated_data;
+current_cell=get(hObject,'value');
+current_track=handles.current_track;
+
+[~, ~, ~, green_channel2,red_channel2, white_channel2] = get_channels_an(handles.annotated_data,current_track,current_cell);
+a0=find(annotated_data(:,1)==current_track);
+b0=find(annotated_data(a0,2)==current_cell);
+classified=annotated_data(a0(b0),6);
+
+% Save into handles
+handles.classified=classified;
+handles.green_channel2 = green_channel2;
+handles.red_channel2   = red_channel2;
+handles.white_channel2 = white_channel2;
+handles.annotated_data = annotated_data;
+
+% Update plots
+update_plots(handles)
+
+guidata(hObject,handles);
+
+% --- Executes during object creation, after setting all properties.
+function listbox1_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to listbox1 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: listbox controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+% --- Executes on button press in annotater.
+% PROBABLY NOT USED (JWB)
+function annotater_Callback(hObject, eventdata, handles)
+warning('I do not know what this function is')
+[filename, pathname] = uiputfile('*.xlsx','save file as..');
+annotated_data=[];
+params=get_params(handles);
+list_track=get(handles.popupmenu1,'string');
+for ii=1:length(list_track)
+    try
+        current_track=str2num(list_track(ii,:));
+        is_mitosis=check_for_mitosis(handles.NUM,current_track,handles);
+        for current_cell=0+1:is_mitosis+1
+            [green_channel, red_channel, white_channel, green_channel2,red_channel2, white_channel2]=get_channels(handles.NUM,current_track,current_cell);
+            green_Slope2=calc_slope(green_channel2);
+            red_Slope2=calc_slope(red_channel2);
+            white_Slope2=calc_slope(white_channel2);
+            classified=classify_stages(params,red_Slope2,green_Slope2,white_Slope2,red_channel,green_channel,white_channel,red_channel2,green_channel2,white_channel2);
+            annotated_data=[annotated_data; ones(size(classified))'*current_track, ones(size(classified))'*current_cell,green_channel(1:length(classified)),red_channel(1:length(classified)),white_channel(1:length(classified)),classified'];
+        end
+    catch ME
+       disp([ 'the track is' num2str(current_track)])
+       pause
+    end
+end
+
+% Write header to excel file (JWB)
+xlswrite([pathname filename], {'track #', 'cell #' , 'red channel' , 'green channel','white channel', 'cell cycle stage'}, 'sheet1' , 'A1')
+
+% Write data to excel file (JWB)
+xlswrite([pathname filename], annotated_data, 'sheet1', 'A2');
+
+% Update handles (JWB)
+handles.annotated_data=annotated_data;
+guidata(hObject,handles);
+
+function edit7_Callback(hObject, eventdata, handles)
+% hObject    handle to edit7 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+% Hints: get(hObject,'String') returns contents of edit7 as text
+%        str2double(get(hObject,'String')) returns contents of edit7 as a double
+
+% --- Executes during object creation, after setting all properties.
+function edit7_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to edit7 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+function edit8_Callback(hObject, eventdata, handles)
+% hObject    handle to edit8 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+% Hints: get(hObject,'String') returns contents of edit8 as text
+%        str2double(get(hObject,'String')) returns contents of edit8 as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function edit8_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to edit8 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+% --- Executes on selection change in listbox2.
+function listbox2_Callback(hObject, eventdata, handles)
+% hObject    handle to listbox2 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+% Hints: contents = cellstr(get(hObject,'String')) returns listbox2 contents as cell array
+%        contents{get(hObject,'Value')} returns selected item from listbox2
+
+% --- Executes during object creation, after setting all properties.
+function listbox2_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to listbox2 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: listbox controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+% --- Executes on button press in pushbutton4.
+function pushbutton4_Callback(hObject, eventdata, handles)
+% Function that updates the plots and manual classification (JWB)
+annotated_data=handles.annotated_data;
+current_track=handles.current_track;
+current_cell=get(handles.listbox1,'value');
+start_value=str2num(get(handles.edit7,'string'));
+end_value=str2num(get(handles.edit8,'string'));
+cycle_phase=get(handles.listbox2,'value');
+handles.classified(start_value:end_value)=cycle_phase;
+
+% Update plots
+update_plots(handles)
+
+% update annotated_data
+a0=find(annotated_data(:,1)==current_track);
+b0=find(annotated_data(a0,2)==current_cell);
+annotated_data(a0(b0),6)=handles.classified;
+handles.annotated_data=annotated_data;
+guidata(hObject,handles);
+
+% --------------------------------------------------------------------
+function open_classified_Callback(hObject, eventdata, handles)
+% Function that opens the excel file for already classified data. (JWB)
+[filename,pathname]=uigetfile('*.xlsx');
+[NUM,TXT,RAW]=xlsread([pathname, filename]);
+handles.NUM=NUM;
+handles.TXT=TXT;
+handles.RAW=RAW;
+handles.annotated_data=NUM;
+set(handles.popupmenu1,'string',num2str(unique(NUM(:,1))));
+guidata(hObject,handles);
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% From here: helper functions
+% Additional function to improve functionalities
+% All GUI functions are above, all helper functions are below
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 function [green_channel, red_channel, white_channel, ...
     green_channel2, red_channel2, white_channel2] = get_channels(NUM,ii,current_cell)
@@ -258,6 +527,7 @@ function classified=classify_stages(params,...
     red_channel2, green_channel2, white_channel2)
 % Function to classify the stages in channels. White channels are not used
 % for classification yet.
+% Calculate slopes inside this function to gain speed (JWB)
 thresh_gradual=params.thresh_gradual;
 thresh_steep=params.thresh_steep;
 time_interval_mitosis=params.time_interval_mitosis;
@@ -400,273 +670,6 @@ if ~isempty(aa)
     end
 end
 
-function annotated_data = annotate_data(NUM,handles)
-    params=get_params(handles);
-
-function edit1_Callback(hObject, eventdata, handles)
-% hObject    handle to edit1 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-% Hints: get(hObject,'String') returns contents of edit1 as text
-%        str2double(get(hObject,'String')) returns contents of edit1 as a double
-
-
-% --- Executes during object creation, after setting all properties.
-function edit1_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to edit1 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: edit controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
-end
-
-function edit2_Callback(hObject, eventdata, handles)
-% hObject    handle to edit2 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-% Hints: get(hObject,'String') returns contents of edit2 as text
-%        str2double(get(hObject,'String')) returns contents of edit2 as a double
-val=get(hObject,value);
-    
-% --- Executes during object creation, after setting all properties.
-function edit2_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to edit2 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: edit controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
-end
-
-function edit3_Callback(hObject, eventdata, handles)
-% hObject    handle to edit3 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-% Hints: get(hObject,'String') returns contents of edit3 as text
-%        str2double(get(hObject,'String')) returns contents of edit3 as a double
-
-% --- Executes during object creation, after setting all properties.
-function edit3_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to edit3 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-% Hint: edit controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
-end
-
-
-
-function edit4_Callback(hObject, eventdata, handles)
-% hObject    handle to edit4 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-% Hints: get(hObject,'String') returns contents of edit4 as text
-%        str2double(get(hObject,'String')) returns contents of edit4 as a double
-
-% --- Executes during object creation, after setting all properties.
-function edit4_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to edit4 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-% Hint: edit controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
-end
-
-function edit5_Callback(hObject, eventdata, handles)
-% hObject    handle to edit5 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-% Hints: get(hObject,'String') returns contents of edit5 as text
-%        str2double(get(hObject,'String')) returns contents of edit5 as a double
-
-% --- Executes during object creation, after setting all properties.
-function edit5_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to edit5 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: edit controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
-end
-
-% --- Executes on selection change in listbox1.
-function listbox1_Callback(hObject, eventdata, handles)
-% hObject    handle to listbox1 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-% Hints: contents = cellstr(get(hObject,'String')) returns listbox1 contents as cell array
-%        contents{get(hObject,'Value')} returns selected item from listbox1
-annotated_data=handles.annotated_data;
-current_cell=get(hObject,'value');
-current_track=handles.current_track;
-
-[green_channel, red_channel, white_channel, green_channel2,red_channel2, white_channel2] = get_channels_an(handles.NUM,current_track,current_cell);
-a0=find(annotated_data(:,1)==current_track);
-b0=find(annotated_data(a0,2)==current_cell);
-classified=annotated_data(a0(b0),6);
-
-% Save into handles
-handles.classified=classified;
-handles.green_channel2 = green_channel2;
-handles.red_channel2   = red_channel2;
-handles.white_channel2 = white_channel2;
-handles.annotated_data = annotated_data;
-
-% Update plots
-update_plots(handles)
-
-guidata(hObject,handles);
-
-% --- Executes during object creation, after setting all properties.
-function listbox1_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to listbox1 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: listbox controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
-end
-
-% --- Executes on button press in annotater.
-function annotater_Callback(hObject, eventdata, handles)
-% hObject    handle to annotater (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-[filename, pathname] = uiputfile('*.xlsx','save file as..');
-annotated_data=[];
-params=get_params(handles);
-list_track=get(handles.popupmenu1,'string');
-for ii=1:length(list_track)
-    try
-        current_track=str2num(list_track(ii,:));
-        is_mitosis=check_for_mitosis(handles.NUM,current_track,handles);
-        for current_cell=0+1:is_mitosis+1
-            [green_channel, red_channel, white_channel, green_channel2,red_channel2, white_channel2]=get_channels(handles.NUM,current_track,current_cell);
-            green_Slope2=calc_slope(green_channel2);
-            red_Slope2=calc_slope(red_channel2);
-            white_Slope2=calc_slope(white_channel2);
-            classified=classify_stages(params,red_Slope2,green_Slope2,white_Slope2,red_channel,green_channel,white_channel,red_channel2,green_channel2,white_channel2);
-            annotated_data=[annotated_data ; ones(size(classified))'*current_track, ones(size(classified))'*current_cell,green_channel(1:length(classified)),red_channel(1:length(classified)),white_channel(1:length(classified)),classified'];
-        end
-    catch ME
-       disp([ 'the track is' num2str(current_track)])
-       pause
-    end
-end
-xlswrite([pathname filename], {'track #', 'cell #' , 'red channel' , 'green channel','white channel', 'cell cycle stage'}, 'sheet1' , 'A1')
-xlswrite([pathname filename], annotated_data, 'sheet1', 'A2');
-handles.annotated_data=annotated_data;
-guidata(hObject,handles);
-
-function edit7_Callback(hObject, eventdata, handles)
-% hObject    handle to edit7 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-% Hints: get(hObject,'String') returns contents of edit7 as text
-%        str2double(get(hObject,'String')) returns contents of edit7 as a double
-
-% --- Executes during object creation, after setting all properties.
-function edit7_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to edit7 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: edit controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
-end
-
-function edit8_Callback(hObject, eventdata, handles)
-% hObject    handle to edit8 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-% Hints: get(hObject,'String') returns contents of edit8 as text
-%        str2double(get(hObject,'String')) returns contents of edit8 as a double
-
-
-% --- Executes during object creation, after setting all properties.
-function edit8_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to edit8 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: edit controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
-end
-
-% --- Executes on selection change in listbox2.
-function listbox2_Callback(hObject, eventdata, handles)
-% hObject    handle to listbox2 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-% Hints: contents = cellstr(get(hObject,'String')) returns listbox2 contents as cell array
-%        contents{get(hObject,'Value')} returns selected item from listbox2
-
-% --- Executes during object creation, after setting all properties.
-function listbox2_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to listbox2 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: listbox controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
-end
-
-% --- Executes on button press in pushbutton4.
-function pushbutton4_Callback(hObject, eventdata, handles)
-% hObject    handle to pushbutton4 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-    annotated_data=handles.annotated_data;
-    current_track=handles.current_track;
-    current_cell=get(handles.listbox1,'value');
-    start_value=str2num(get(handles.edit7,'string'));
-    end_value=str2num(get(handles.edit8,'string'));
-    cycle_phase=get(handles.listbox2,'value');
-    handles.classified(start_value:end_value)=cycle_phase;
-    
-    % Update plots
-    update_plots(handles)
-    
-    % update annotated_data
-    a0=find(annotated_data(:,1)==current_track);
-    b0=find(annotated_data(a0,2)==current_cell);
-    annotated_data(a0(b0),6)=handles.classified;
-    handles.annotated_data=annotated_data;
-    guidata(hObject,handles);
-
-% --------------------------------------------------------------------
-function open_classified_Callback(hObject, eventdata, handles)
-% hObject    handle to open_classified (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-[filename,pathname]=uigetfile('*.xlsx');
-[NUM,TXT,RAW]=xlsread([pathname, filename]);
-handles.NUM=NUM;
-handles.TXT=TXT;
-handles.RAW=RAW;
-handles.annotated_data=NUM;
-set(handles.popupmenu1,'string',num2str(unique(NUM(:,1))));
-guidata(hObject,handles);
-
 function is_mitosis=check_for_mitosis_an(annotated_data,current_track,handles)
 is_mitosis=0;
 set(handles.listbox1,'string','1');
@@ -680,6 +683,8 @@ if length(b0) > 1
 end
         
 function [green_channel, red_channel, white_channel, green_channel2,red_channel2, white_channel2]=get_channels_an(annotated_data,current_track,current_cell)
+% Function that gets the channels from the annotated_data for a specific
+% track and a specific cell (JWB).
 a0=find(annotated_data(:,1)==current_track);
 aa=find(annotated_data(a0,2)==current_cell);
 if ~isempty(aa)
@@ -706,7 +711,8 @@ if ~isempty(aa)
 end
 
 function update_plots(handles)
-% The plot is updated through this function
+% The plot is updated through this function, edit this function for style
+% changes to the plot (JWB)
 
 % Plot the lines
 plot(handles.green_channel2,'g', 'LineWidth', 1.5)
@@ -724,3 +730,27 @@ ylabel('Relative intensity')
 % Grid settings
 grid on
 grid minor
+
+function [classified] = delete_begin_end(classified)
+% Function that deletes the begin and end of a certain classification. It
+% puts a zero for deleted classification. (JWB)
+first = classified(1);
+last = classified(end);
+
+% Loop over entries from second item 
+for i=1:1:length(classified)
+    if classified(i) ~= first
+        % A classification boundary is reached
+        break
+    end
+    classified(i) = 0;
+end
+
+% Loop backwards over entries from second to last item
+for i=length(classified):-1:1
+    if classified(i) ~= last
+        % A classification boundary is reached
+        break
+    end
+    classified(i) = 0;
+end

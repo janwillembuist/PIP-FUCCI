@@ -400,9 +400,6 @@ if ~isempty(aa)
     end
 end
 
-function annotated_data = annotate_data(NUM,handles)
-    params=get_params(handles);
-
 function edit1_Callback(hObject, eventdata, handles)
 % hObject    handle to edit1 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB

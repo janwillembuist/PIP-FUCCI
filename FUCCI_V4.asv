@@ -166,7 +166,9 @@ function open_file_Callback(hObject, eventdata, handles)
 
 % --------------------------------------------------------------------
 function open_Callback(hObject, eventdata, handles)
-% Function for the excel opening of raw data. (JWB)
+% hObject    handle to open (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
 [filename,pathname]=uigetfile('*.xlsx');
 [NUM,TXT,RAW]=xlsread([pathname, filename]);
 handles.NUM=NUM;
@@ -649,7 +651,9 @@ function pushbutton4_Callback(hObject, eventdata, handles)
 
 % --------------------------------------------------------------------
 function open_classified_Callback(hObject, eventdata, handles)
-% Function that opens the excel file for already classified data. (JWB)
+% hObject    handle to open_classified (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
 [filename,pathname]=uigetfile('*.xlsx');
 [NUM,TXT,RAW]=xlsread([pathname, filename]);
 handles.NUM=NUM;
@@ -672,8 +676,7 @@ if length(b0) > 1
 end
         
 function [green_channel, red_channel, white_channel, green_channel2,red_channel2, white_channel2]=get_channels_an(annotated_data,current_track,current_cell)
-% Function that gets the channels from the annotated_data for a specific
-% track and a specific cell (JWB).
+% Func
 a0=find(annotated_data(:,1)==current_track);
 aa=find(annotated_data(a0,2)==current_cell);
 if ~isempty(aa)

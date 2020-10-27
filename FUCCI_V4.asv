@@ -184,7 +184,7 @@ end
 
 function listbox2_Callback(hObject, eventdata, handles)
 % 'Listbox2' has no callback. The value selected in it is picked by the
-% 'update' button (JWB)
+% 'update' button
 
 function listbox2_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))

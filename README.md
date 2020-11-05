@@ -5,7 +5,7 @@ PIP-FUCCI tool in MATLAB
 1. ~~Add SiR-DNA channel~~
 2. ~~Set classifier to zero if it is the first or last cell stage~~
 3. ~~Migrate the tool from GUIDE to new GUI options in MATLAB~~
-3. Improve the manual characterization options
+3. ~~Improve the manual characterization options~~
 3. Improve automatic detection
 3. Check the child cell thing
 3. Add image in GUI for visual inspection by loading the image data file
@@ -14,4 +14,4 @@ PIP-FUCCI tool in MATLAB
 ## BUGS
 - Undefined button actions
 - Speed gains not used (pre-allocating, str2double, &&)
-- GUI is created with GUIDE, which will be unsupported in the future
+- ~~GUI is created with GUIDE, which will be unsupported in the future~~

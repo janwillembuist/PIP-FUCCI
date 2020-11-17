@@ -1,5 +1,5 @@
 <deployment-project plugin="plugin.apptool" plugin-version="1.0">
-  <configuration build-checksum="386146806" file="C:\Users\Jan Willem\Documents\Coding_projects\Kojac\PIP-FUCCI\PIP-FUCCI TOOL V5.prj" location="C:\Users\Jan Willem\Documents\Coding_projects\Kojac\PIP-FUCCI" name="PIP-FUCCI TOOL V5" target="target.mlapps" target-name="Package App">
+  <configuration build-checksum="296584500" file="C:\Users\Jan Willem\Documents\Coding_projects\Kojac\PIP-FUCCI\PIP-FUCCI TOOL V5.prj" location="C:\Users\Jan Willem\Documents\Coding_projects\Kojac\PIP-FUCCI" name="PIP-FUCCI TOOL V5" target="target.mlapps" target-name="Package App">
     <param.appname>PIP-FUCCI TOOL V5</param.appname>
     <param.authnamewatermark>Jan Willem Buist</param.authnamewatermark>
     <param.email />
@@ -8,7 +8,7 @@
     <param.icons />
     <param.summary>Tool to analyse cell cyclus data</param.summary>
     <param.description />
-    <param.screenshot />
+    <param.screenshot>C:\Users\Jan Willem\Downloads\snip1.jpg</param.screenshot>
     <param.version>5.0</param.version>
     <param.products.name />
     <param.products.id />
@@ -22,7 +22,6 @@
       <param.icon />
       <param.icons />
       <param.description />
-      <param.screenshot />
       <param.products.name />
       <param.products.id />
       <param.products.version />

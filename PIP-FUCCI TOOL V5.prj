@@ -8,7 +8,7 @@
     <param.icons />
     <param.summary>Tool to analyse cell cyclus data</param.summary>
     <param.description />
-    <param.screenshot>C:\Users\Jan Willem\Downloads\snip1.jpg</param.screenshot>
+    <param.screenshot />
     <param.version>5.0</param.version>
     <param.products.name />
     <param.products.id />
@@ -22,6 +22,7 @@
       <param.icon />
       <param.icons />
       <param.description />
+      <param.screenshot />
       <param.products.name />
       <param.products.id />
       <param.products.version />

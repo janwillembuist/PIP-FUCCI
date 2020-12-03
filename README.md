@@ -1,27 +1,33 @@
 # PIP-FUCCI
-PIP-FUCCI tool in MATLAB
+PIP-FUCCI tool in MATLAB. A tool to analyse fluorescent cell data from [TrackMate] and classify the cell stages based on that data. Development commisioned by the [NKI][2].
 
-## TODO
-1. ~~Add SiR-DNA channel~~
-2. ~~Set classifier to zero if it is the first or last cell stage~~
-3. ~~Migrate the tool from GUIDE to new GUI options in MATLAB~~
-3. ~~Improve the manual characterization options~~
-3. Improve automatic detection
-    - Fix old one
-    - Improve it
-3. ~~Check the child cell thing~~
-3. ~~Add image in GUI for visual inspection by loading the image data file~~
-    ~~- Load the tiff file with menu button~~
-    ~~- change frame for current track with button~~
-    ~~- Save posX and posY into handles in data loading~~
-    ~~- Combine it altogether~~
-    ~~- Check the longer than 95 arrays~~
-4. ~~Enable csv loading as input~~, code speed gains, error debugging
 
-## BUGS
-- Specify UIAxes
-- Undefined button actions
-- Speed gains not used (pre-allocating, ~~str2double~~, ~~&&~~)
-- Handles could be replaced by app properties for consistency with the MATLAB app development.
-- ~~GUI is created with GUIDE, which will be unsupported in the future~~
-- Excel/tiff warnings
+## Installation
+The PIP-FUCCI tool can be installed by downloading the most recent installer from [github][1] and opening it with your MATLAB client. After installing it will be accessible from the **apps** tab inside MATLAB. With a simple click the PIP-FUCCI tool should appear on your screen.
+
+## Accepted input data
+* Raw data (.xlsx, .csv)
+* Classified data (.xlsx) (savefile of the PIP-FUCCI tool)
+* Image data (.tiff, .tif)
+
+## Algorithm description
+Based on the fluorescent cell data from TrackMate, the PIP-FUCCI tool classifies every timestep on the track with a cell stage. When you load data in the PIP-FUCCI tool, the four-phase classification algorithm is applied on each track in the file. If you are viewing a specific track, you can apply the five-phase classification algorithm to the track by clicking **Divide Mitosis**.
+
+### Four-phase classification
+The four-phase classification classifies four different classes:
+1. M (Mitosis)
+2. G1 (Growth 1)
+3. S (Synthesis)
+4. G2 (Growth 2)
+
+### Five-phase classification
+The five-phase classification classifies five different classes:
+1. M1 (Prophase-Metaphase)
+2. M2 (Anaphase-Telophase)
+2. G1 (Growth 1)
+3. S (Synthesis)
+4. G2 (Growth 2)
+
+[1]: https://github.com/janwillembuist/PIP-FUCCI/tree/main/dist
+[2]: https://www.nki.nl/
+[3]: https://imagej.net/TrackMate

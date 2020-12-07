@@ -1,6 +1,8 @@
 # PIP-FUCCI
-PIP-FUCCI tool in MATLAB. A tool to analyse fluorescent cell data from [TrackMate] and classify the cell stages based on that data. Development commisioned by the [NKI][2].
+PIP-FUCCI tool in MATLAB. A tool to analyse fluorescent cell data from [TrackMate][3] and classify the cell stages based on that data. Development commisioned by the [NKI][2].
 
+Author: [@janwillembuist][4]
+Date: 8-12-2020
 
 ## Installation
 The PIP-FUCCI tool can be installed by downloading the most recent installer from [github][1] and opening it with your MATLAB client. After installing it will be accessible from the **apps** tab inside MATLAB. With a simple click the PIP-FUCCI tool should appear on your screen.
@@ -31,3 +33,4 @@ The five-phase classification classifies five different classes:
 [1]: https://github.com/janwillembuist/PIP-FUCCI/tree/main/dist
 [2]: https://www.nki.nl/
 [3]: https://imagej.net/TrackMate
+[4]: https://github.com/janwillembuist

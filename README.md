@@ -2,6 +2,7 @@
 PIP-FUCCI tool in MATLAB. A tool to analyse fluorescent cell data from [TrackMate][3] and classify the cell stages based on that data. Development commisioned by the [NKI][2].
 
 Author: [@janwillembuist][4]
+
 Date: 8-12-2020
 
 ## Installation

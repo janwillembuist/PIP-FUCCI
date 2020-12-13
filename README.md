@@ -44,13 +44,33 @@ The four-phase classification classifies the cell cyclus into four different cla
 3. S (Synthesis)
 4. G2 (Growth 2)
 
+It does this by taking the following steps for each single track and cell (settings are in **bold**):
+1. Take the raw PIP-mVenus and Gem-mCherry channel.
+2. Normalize by dividing with the maximum value of the channel.
+3. Apply an median filter with a kernel size of 5 frames to the normalized channels. All further references of the PIP-mVenus and Gem-mCherry channel will be the normalized and filtered version.
+4. Compute the slopes of the channels with a first order central difference scheme.
+5. Compute the **minima tresholds** by adding the percentage from the **automatic classification settings** to the absolute minima of both channels.
+6. Classify all frames where the Gem-mCherry channel is below its **minimum threshold** as G1.
+7. Classify all frames where the slope of both channels is above the **gradual threshold** as G2.
+8. Classify all frames where either the slope of the Gem-mCherry channel is above the **gradual threshold** and the slope of the PIP-mVenus channel is below the **gradual threshold** and the PIP-mVenus channel is below its **minimum threshold**, or either both channels are below their **minimum threshold**, as S.
+9. Classify all frames where the slope of the Gem-mCherry channel is below the **steep threshold** as M.
+10. Connect M phases that are inside the **M interval**.
+11. For every frame still uncertain, set the phase to the last certain phase before it.
+12. If the **add uncertainty to begin and end** box is checked, set the phases without beginning or end to uncertain.
+
 ### Five-phase classification
 The five-phase classification classifies five different classes:
-1. M1 (Prophase-Metaphase)
-2. M2 (Anaphase-Telophase)
+1. P-M (Prophase-Metaphase)
+2. A-T (Anaphase-Telophase)
 2. G1 (Growth 1)
 3. S (Synthesis)
 4. G2 (Growth 2)
+
+This algorithm builds on the work of the four-phase classification and takes the M phase as input. It works best on track records with two distinct drops in the Gem-mCherry channel in the mitosis phase. The algorithm takes the following steps:
+1. Compute the slope of the normalized and filtered Gem-mCherry channel by applying a first order central difference scheme.
+1. Compute the curvature of the normalized and filtered Gem-mCherry channel by applying a first order central difference scheme twice.
+2. If the minimal curvature is negative and the slope at that point is also negative, split the M phase at that point. This means the second drop in the Gem-mCherry channel starts at this point. If the slope at that point is not negative, it might not be a second drop. In that case the M channel is splitted in the center.
+3. If the minimal curvature is positive, there is just one drop in the Gem-mCherry channel. Split the M phase at the center.
 
 [1]: https://github.com/janwillembuist/PIP-FUCCI/tree/main/dist
 [2]: https://www.nki.nl/

@@ -66,7 +66,7 @@ The five-phase classification classifies five different classes:
 3. S (Synthesis)
 4. G2 (Growth 2)
 
-This algorithm builds on the work of the four-phase classification and takes the M phase as input. It works best on track records with two distinct drops in the Gem-mCherry channel in the mitosis phase. The algorithm takes the following steps:
+This algorithm builds on the work of the four-phase classification and takes the M phase as input. It works best on track records with two distinct drops in the Gem-mCherry channel in the mitosis phase. If the **always divide mitosis** box is checked, this algorithm will always run after the four-phase classification algorithm. Otherwise, it can be manually started for a certain track by clicking **Divide mitosis**. The algorithm takes the following steps:
 1. Compute the slope of the normalized and filtered Gem-mCherry channel by applying a first order central difference scheme.
 1. Compute the curvature of the normalized and filtered Gem-mCherry channel by applying a first order central difference scheme twice.
 2. If the minimal curvature is negative and the slope at that point is also negative, split the M phase at that point. This means the second drop in the Gem-mCherry channel starts at this point. If the slope at that point is not negative, it might not be a second drop. In that case the M channel is splitted in the center.

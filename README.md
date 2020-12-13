@@ -14,9 +14,9 @@ In this readme the following topics are described:
 The PIP-FUCCI tool can be installed by downloading the most recent installer from [github][1] and opening it with your MATLAB client. After installing it will be accessible from the **apps** tab inside MATLAB. With a simple click the PIP-FUCCI tool should appear on your screen.
 
 ## Usage
-After installation the PIP-FUCCI tool can be launched from the **apps** tab inside MATLAB. You should now see the app window appear like this:
+The PIP-FUCCI tool can be launched from the **apps** tab inside MATLAB. You should now see the app window appear like this:
 
-image here
+![main_window.png](images/main_window.png)
 
 In the menu bar, data can be loaded into the app. Loading raw data, or classified data (saved from a previous session) starts up most of the app's features. When loading raw data, the app will automatically classify the cell phases with the **four-phase classification algorithm**. This algorithm is described in the algorithms section of this readme. The options defined in the **automatic classification settings** box in the app influence the behaviour of the algorithm. The **Image files** button can load the corresponding tiff file from TrackMate to visually inspect the cell phase classification. When you click on this button the app will ask you to confirm a few settings. Here you can specify the image size, if cell locations in your data file are not defined in pixels, the brightness, and the clipping around a cell.
 

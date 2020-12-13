@@ -1,5 +1,5 @@
 <deployment-project plugin="plugin.apptool" plugin-version="1.0">
-  <configuration build-checksum="1636368022" file="C:\Users\Jan Willem\Documents\Coding_projects\Kojac\PIP-FUCCI\PIP-FUCCI TOOL V5.prj" location="C:\Users\Jan Willem\Documents\Coding_projects\Kojac\PIP-FUCCI" name="PIP-FUCCI TOOL V5" target="target.mlapps" target-name="Package App">
+  <configuration build-checksum="2229056766" file="C:\Users\Jan Willem\Documents\Coding_projects\Kojac\PIP-FUCCI\PIP-FUCCI TOOL V5.prj" location="C:\Users\Jan Willem\Documents\Coding_projects\Kojac\PIP-FUCCI" name="PIP-FUCCI TOOL V5" target="target.mlapps" target-name="Package App">
     <param.appname>PIP-FUCCI TOOL V5</param.appname>
     <param.authnamewatermark>Jan Willem Buist</param.authnamewatermark>
     <param.email>janwillembuist@gmail.com</param.email>
@@ -9,7 +9,7 @@
     <param.summary>Tool to analyse cell cyclus data</param.summary>
     <param.description>Analyse cell cyclus data
 Author: J.W. Buist</param.description>
-    <param.screenshot>C:\Users\Jan Willem\AppData\Local\Temp\tp8b011633_0776_489e_b7cb_bf7c199e1ecc.jpg</param.screenshot>
+    <param.screenshot>${PROJECT_ROOT}\images\main_window.png</param.screenshot>
     <param.version>5.0</param.version>
     <param.products.name />
     <param.products.id />
@@ -30,7 +30,11 @@ Author: J.W. Buist</param.description>
       <file>${PROJECT_ROOT}\FUCCI_V5.mlapp</file>
     </fileset.main>
     <fileset.depfun />
-    <fileset.resources />
+    <fileset.resources>
+      <file>${PROJECT_ROOT}\images</file>
+      <file>${PROJECT_ROOT}\images\main_window.png</file>
+      <file>${PROJECT_ROOT}\README.md</file>
+    </fileset.resources>
     <fileset.package />
     <build-deliverables>
       <file location="${PROJECT_ROOT}" name="dist" optional="false">C:\Users\Jan Willem\Documents\Coding_projects\Kojac\PIP-FUCCI\dist</file>

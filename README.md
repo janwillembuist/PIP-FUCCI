@@ -10,8 +10,12 @@ In this readme the following topics are described:
 * Usage
 * Algorithms
 
+
+
 ## Installation
 The PIP-FUCCI tool can be installed by downloading the most recent installer from [github][1] and opening it with your MATLAB client. After installing it will be accessible from the **apps** tab inside MATLAB. With a simple click the PIP-FUCCI tool should appear on your screen.
+
+
 
 ## Usage
 The PIP-FUCCI tool can be launched from the **apps** tab inside MATLAB. You should now see the app window appear like this:
@@ -33,6 +37,21 @@ If you spot some errors in the automatic classification, changes to the cell sta
 
 ### Displaying third channel image and adding comments
 When tiff data is loaded in the app, you can visually inspect the third channel image of the cell. Fill in a frame number you would like to see of the selected track and selected cell and click **update**. From here you can click forward and backward to move through the frame numbers. By adding a comment in the comment box and clicking **add**, you will add a comment in the output file for this specific **track**, **cell**, and **frame**.
+
+### Output
+By saving the data, you will get an option to save the output as excel file. In this file the classification is given a number. The following phases correspond to the following numbers:
+
+| Cell phase  | Value in output |
+|-------------|-----------------|
+| "Uncertain" | 0               |
+| "P-M"       | 1               |
+| "A-T"       | 2               |
+| "M"         | 3               |
+| "G1"        | 4               |
+| "S"         | 5               |
+| "G2"        | 6               |
+
+
 
 ## Algorithms
 Based on the fluorescent cell data from TrackMate, the PIP-FUCCI tool classifies every timestep on the track with a cell stage. When you load data in the PIP-FUCCI tool, the four-phase classification algorithm is applied on each track in the file. If you are viewing a specific track, you can apply the five-phase classification algorithm to the track by clicking **Divide Mitosis**.

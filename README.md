@@ -5,6 +5,8 @@ Author: [@janwillembuist][4]
 
 Date: 13-12-2020
 
+MATLAB version: R2020b
+
 In this readme the following topics are described:
 * Installation
 * Usage
